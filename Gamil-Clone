@@ -1,0 +1,82 @@
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Map;
+import java.util.ArrayList;
+
+class GmailClone {
+  static HashMap<String, ArrayList<String>> mail = new HashMap<>();
+  static Scanner sc = new Scanner(System.in);
+
+  public static void main(String[] args) {
+    boolean authenticated = false;
+    do {
+      try {
+        System.out.print("Enter Mail to authenticate: ");
+        String mailName = sc.next();
+        sc.nextLine();
+        if (mailName.substring(mailName.length() - 10).equals("@gmail.com")) {
+          authenticated = true;
+        }
+      } catch (Exception e) {
+        System.out.println("Please enter a valid mail address!");
+        continue;
+      }
+    } while (!authenticated);
+    if (authenticated) {
+      while (true) {
+        System.out.print("\n\n1. Send Mail.\n2. Check Inbox\n3. Exit\n\nEnter choice:");
+        String choice = sc.nextLine();
+        if (choice.equals("1") || choice.equalsIgnoreCase("Send Mail")) {
+          Mail.sendMail();
+        } else if (choice.equals("2") || choice.equalsIgnoreCase("Check Inbox")) {
+          Mail.inbox();
+        } else if (choice.equals("3") || choice.equalsIgnoreCase("Exit")) {
+          System.out.println("Exiting...");
+          return;
+        } else {
+          System.out.println("Invalid choice!");
+          continue;
+        }
+      }
+    }
+  }
+}
+
+class Mail {
+  public static void sendMail() {
+    System.out.print("To(Yourself): ");
+    String gmail = GmailClone.sc.next();
+    GmailClone.sc.nextLine();
+    System.out.print("Body: ");
+    String body = GmailClone.sc.nextLine();
+    GmailClone.mail.putIfAbsent(gmail, new ArrayList<String>());
+    GmailClone.mail.get(gmail).add(body);
+    System.out.println("Mail sent!✉️✅");
+  }
+
+  public static void inbox() {
+    if (GmailClone.mail.isEmpty()) {
+      System.out.println("Your inbox is empty📭");
+      return;
+    }
+    int i = 1;
+    for (Map.Entry<String, ArrayList<String>> e : GmailClone.mail.entrySet()) {
+      System.out.println("\n" + i + "From: " + e.getKey());
+      for (String msg : e.getValue()) {
+        System.out.println(" ✉️ " + msg);
+      }
+      i++;
+    }
+    System.out.println("Reply:\nTo: ");
+    String toReply = GmailClone.sc.next();
+    GmailClone.sc.nextLine();
+    if (!GmailClone.mail.containsKey(toReply)) {
+      System.out.println("No such mail found!");
+      return;
+    }
+    System.out.println("Body: ");
+    String replyBody = GmailClone.sc.nextLine();
+    GmailClone.mail.get(toReply).add(replyBody);
+    System.out.println("Reply sent!✅");
+  }
+}
